@@ -21,6 +21,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "lcars-design-system": "github:JawsomeJason/lcars-design-system#semver:^0.6.0"
+    "lcars-design-system": "github:JawsomeJason/lcars-design-system#semver:^0.7.0"
   }
 }

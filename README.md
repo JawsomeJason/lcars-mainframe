@@ -53,7 +53,7 @@ The program prints a JSON object (`{"open_prs": 3}`), `key=value` lines, or one 
 
 ## Theme
 
-New vaults use the LCARS theme, generated from [lcars-design-system](https://github.com/JawsomeJason/lcars-design-system) tokens: the LCARS palette, headings in the accent colors, properties and tags as pills. Pick the era (TNG, VOY, FC, NEM or PIC) in Settings › Style Settings › LCARS. To change the theme, change the design system or `theme/build.mjs`, then `npm run build:theme`; never edit the generated CSS.
+New vaults use the LCARS theme, generated from [lcars-design-system](https://github.com/JawsomeJason/lcars-design-system) tokens: the LCARS palette, headings in the accent colors, properties and tags as pills. Pick the era (TNG, VOY, FC, NEM, PIC or LD) in Settings › Style Settings › LCARS. To change the theme, change the design system or `theme/build.mjs`, then `npm run build:theme`; never edit the generated CSS.
 
 ## Credits
 

@@ -15,8 +15,8 @@
 <style>
   .shot { width: 100%; height: auto; display: block; border-radius: calc(var(--gap) * 2); }
   .shots img:not([data-era-shot="tng"]) { display: none; }
-  [data-theme="voy"] .shots img[data-era-shot="tng"], [data-theme="fc"] .shots img[data-era-shot="tng"], [data-theme="nem"] .shots img[data-era-shot="tng"], [data-theme="pic"] .shots img[data-era-shot="tng"] { display: none; }
-  [data-theme="voy"] .shots img[data-era-shot="voy"], [data-theme="fc"] .shots img[data-era-shot="fc"], [data-theme="nem"] .shots img[data-era-shot="nem"], [data-theme="pic"] .shots img[data-era-shot="pic"] { display: block; }
+  [data-theme="voy"] .shots img[data-era-shot="tng"], [data-theme="fc"] .shots img[data-era-shot="tng"], [data-theme="nem"] .shots img[data-era-shot="tng"], [data-theme="pic"] .shots img[data-era-shot="tng"], [data-theme="ld"] .shots img[data-era-shot="tng"] { display: none; }
+  [data-theme="voy"] .shots img[data-era-shot="voy"], [data-theme="fc"] .shots img[data-era-shot="fc"], [data-theme="nem"] .shots img[data-era-shot="nem"], [data-theme="pic"] .shots img[data-era-shot="pic"], [data-theme="ld"] .shots img[data-era-shot="ld"] { display: block; }
 </style>
 </head>
 <body>
@@ -39,7 +39,7 @@
   </div></div>
   <main>
     <div class="controls">
-      <div role="group" aria-label="Era"><span class="k">Era</span><button class="btn" type="button" data-set-theme="tng" aria-pressed="true"><span>TNG</span></button><button class="btn" type="button" data-set-theme="voy" aria-pressed="false"><span>VOY</span></button><button class="btn" type="button" data-set-theme="fc" aria-pressed="false"><span>FC</span></button><button class="btn" type="button" data-set-theme="nem" aria-pressed="false"><span>NEM</span></button><button class="btn" type="button" data-set-theme="pic" aria-pressed="false"><span>PIC</span></button></div>
+      <div role="group" aria-label="Era"><span class="k">Era</span><button class="btn" type="button" data-set-theme="tng" aria-pressed="true"><span>TNG</span></button><button class="btn" type="button" data-set-theme="voy" aria-pressed="false"><span>VOY</span></button><button class="btn" type="button" data-set-theme="fc" aria-pressed="false"><span>FC</span></button><button class="btn" type="button" data-set-theme="nem" aria-pressed="false"><span>NEM</span></button><button class="btn" type="button" data-set-theme="pic" aria-pressed="false"><span>PIC</span></button><button class="btn" type="button" data-set-theme="ld" aria-pressed="false"><span>LD</span></button></div>
       <div role="group" aria-label="Mode"><span class="k">Mode</span><button class="btn" type="button" data-set-mode="dark" aria-pressed="true"><span>dark</span></button><button class="btn" type="button" data-set-mode="light" aria-pressed="false"><span>light</span></button></div>
     </div>
     <nav class="mnav" aria-label="Sections">
@@ -57,6 +57,7 @@
         <img class="shot" data-era-shot="fc" src="img/obsidian-fc.png" alt="The same daily note in the First Contact era: bronze bars, lavender blocks and pale cyan headings." width="1400" height="1076" loading="lazy">
         <img class="shot" data-era-shot="nem" src="img/obsidian-nem.png" alt="The same daily note in the Nemesis era: deep blue bars and cyan headings." width="1400" height="1076" loading="lazy">
         <img class="shot" data-era-shot="pic" src="img/obsidian-pic.png" alt="The same daily note in the Picard era: slate bars on a blue-black page." width="1400" height="1076" loading="lazy">
+        <img class="shot" data-era-shot="ld" src="img/obsidian-ld.png" alt="The same daily note in the Lower Decks era: orange bars, butter headings and honey blocks." width="1400" height="1076" loading="lazy">
         <figcaption>A daily note in the LCARS theme. Choose an era above and the screenshot follows.</figcaption>
       </figure>
     </section>
@@ -111,7 +112,7 @@ lcars init ~/Notes          # shows every file it will add, then asks</code></pr
     <section id="theme">
       <h2 class="sh"><span class="cut">Theme</span><span class="seg"></span><span class="seg cap"><span>06</span></span></h2>
       <p>New vaults use the LCARS theme, generated from the <a href="https://jawsomejason.github.io/lcars-design-system/">LCARS Design System</a> tokens and built in its grammar: headings cut into bars, callouts framed by elbows and sidebars, properties as contact rows, and tags as pills.</p>
-      <p>Pick the era in Settings › Style Settings › LCARS: TNG, VOY, FC, NEM or PIC. Obsidian’s light and dark appearance switch the mode.</p>
+      <p>Pick the era in Settings › Style Settings › LCARS: TNG, VOY, FC, NEM, PIC or LD (Lower Decks). Obsidian’s light and dark appearance switch the mode.</p>
       <p>To change the theme, change the design system or <code>theme/build.mjs</code>, then run <code>npm run build:theme</code>. Never edit the generated CSS.</p>
     </section>
 
@@ -138,7 +139,7 @@ lcars init ~/Notes          # shows every file it will add, then asks</code></pr
 <script>
 (() => {
   const root = document.documentElement;
-  const valid = { theme: ['tng', 'voy', 'fc', 'nem', 'pic'], mode: ['dark', 'light'] };
+  const valid = { theme: ['tng', 'voy', 'fc', 'nem', 'pic', 'ld'], mode: ['dark', 'light'] };
   const load = (k) => { try { return localStorage.getItem('lcars-' + k); } catch { return null; } };
   const save = (k, v) => { try { localStorage.setItem('lcars-' + k, v); } catch {} };
   function set(key, value, keep = true) {
