@@ -171,6 +171,21 @@ test('a lock held by a live process blocks a second run; a stale one is cleared'
   assert.equal(exists(vault, '.lcars/lock'), false);
 });
 
+test('the shipped Daily template: onboarding properties survive a core change elsewhere; a reworded marker comment conflicts', () => {
+  const base = fs.readFileSync(path.join(__dirname, '../vault/00 Human/80 Templates/Daily.md'));
+  const marker = '# Collector scripts fill them; a failed reading is written as unknown, never 0.\n';
+  assert.ok(base.includes(marker), 'fixture assumes the marker comment');
+  const mine = Buffer.from(base.toString().replace(marker, marker + 'revenue:\nsteps:\n'));
+
+  const elsewhere = sync.merge3(base, mine, Buffer.from(base.toString().replace('## Notes', '## Notes and links')));
+  assert.equal(elsewhere.clean, true);
+  assert.match(elsewhere.text.toString(), /never 0\.\nrevenue:\nsteps:\n---[\s\S]*## Notes and links/);
+
+  // Adjacent lines conflict in git's merge: the owner gets a .new, never a lost property.
+  const adjacent = sync.merge3(base, mine, Buffer.from(base.toString().replace(marker, '# Connectors fill them; a failed reading is unknown, never 0.\n')));
+  assert.equal(adjacent.clean, false);
+});
+
 test('classify: Obsidian config, FINDINGS and .gitignore are seeds', () => {
   assert.equal(sync.classify('.obsidian/app.json'), 'seed');
   assert.equal(sync.classify('Machine/Workflows/today/FINDINGS.md'), 'seed');
