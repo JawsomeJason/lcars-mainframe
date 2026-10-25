@@ -152,3 +152,14 @@ test('review: a timeout also kills what the connector started', async () => {
   assert.match(r.stdout, /Timed out after 0\.5s/);
   assert.ok(Date.now() - started < 5000, 'took ' + (Date.now() - started) + 'ms');
 });
+
+test('review: a timed-out connector leaves no process behind', async () => {
+  const vault = tree({
+    '00 Human/80 Templates/Daily.md': TEMPLATE,
+    'local/connectors/sh/connector.json': JSON.stringify({ properties: ['alpha_total'], run: ['sh', '-c', 'sleep 30 & echo $! > child.pid; wait'], timeoutSeconds: 0.5 }),
+  });
+  await run(vault, tree({}), { dryRun: true });
+  const pid = Number(fs.readFileSync(path.join(vault, 'local/connectors/sh/child.pid'), 'utf8'));
+  await new Promise(r => setTimeout(r, 200));
+  assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' }, 'grandchild ' + pid + ' is still running');
+});
