@@ -26,6 +26,11 @@ test('the payload carries no personal identifiers', () => {
   assert.deepEqual(hits, []);
 });
 
+test('no stray hidden files ship: only .obsidian/ and .gitignore', () => {
+  const allowed = f => f === '.gitignore' || /^\.obsidian\/(?!.*\/\.)/.test(f);
+  assert.deepEqual(files.filter(f => f.split('/').some(part => part.startsWith('.')) && !allowed(f)), []);
+});
+
 test('no code ships into the vault outside Obsidian plugins', () => {
   assert.deepEqual(ours.filter(f => /\.(c|m)?js$|\.sh$|\.py$/.test(f)), []);
 });
