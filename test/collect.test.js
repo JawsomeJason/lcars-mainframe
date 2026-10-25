@@ -163,3 +163,21 @@ test('review: a timed-out connector leaves no process behind', async () => {
   await new Promise(r => setTimeout(r, 200));
   assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' }, 'grandchild ' + pid + ' is still running');
 });
+
+test('a crash halfway through writing never leaves a half-written daily note', async () => {
+  const vault = tree({
+    '00 Human/80 Templates/Daily.md': TEMPLATE,
+    ...prefixed('local/connectors/alpha/', connector(['alpha_total'], 'console.log(14)')),
+  });
+  const note = path.join(vault, '00 Human/10 Daily Notes', localDate() + '.md');
+  fs.mkdirSync(path.dirname(note), { recursive: true });
+  fs.writeFileSync(note, TEMPLATE + 'Notes the owner wrote today.\n');
+  const before = fs.readFileSync(note, 'utf8');
+  // Simulated crash: every write lands only its first half, then the process "dies".
+  const real = fs.writeFileSync;
+  fs.writeFileSync = (file, data, ...rest) => { real(file, String(data).slice(0, String(data).length / 2), ...rest); throw Error('simulated crash'); };
+  try {
+    await assert.rejects(run(vault, tree({})), /simulated crash/);
+  } finally { fs.writeFileSync = real; }
+  assert.equal(fs.readFileSync(note, 'utf8'), before);
+});

@@ -133,7 +133,7 @@ Accepted after an independent review of 0.1.0 (each with a regression test):
 - `upgrade` refuses to go back to an older lcars without `--force`.
 - Unknown CLI flags are errors, and `--key=value` is accepted.
 - `collect` never replaces a value already in today's note with `unknown`; it reports the failure and keeps the value. This refines "failures write `unknown`": they do, into an empty field.
-- A connector runs in its own process group so a timeout kills what it started. The daily note is written to a temp file and renamed (not covered by a test: it needs fault injection).
+- A connector runs in its own process group so a timeout kills what it started. The daily note is written to a temp file and renamed, so a crash mid-write leaves the old note (tested by failing every write halfway).
 - The `--env-file` wrapper runs collect even when the env file's last command exits non-zero.
 
 ## Open questions
