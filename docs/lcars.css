@@ -1,0 +1,245 @@
+/* LCARS in CSS, for the docs site: the geometry of spec/anatomy.md, colored by the role variables in
+   roles.css (generated). Scope a theme and mode with data-theme and data-mode on any element.
+   Every length is a multiple of the unit u; there is one gap; state changes are hard cuts. */
+
+:root {
+  --u: clamp(1px, 0.4px + 0.09vw, 1.75px);
+  --gap: calc(3 * var(--u));
+  --bar: calc(36 * var(--u));
+  --bar-s: calc(22 * var(--u));
+  --row: calc(20 * var(--u));
+  --sidebar: calc(112.8 * var(--u));
+  --inset: calc(2.75 * var(--u));
+  --cap-ratio: 0.859375;
+  --display: Antonio, "Arial Narrow", "Avenir Next Condensed", sans-serif;
+  --body: Lato, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* Derived per frame, so a nested panel with a thinner arm gets its own elbow. */
+.frame, .panel {
+  --overrun: calc(var(--bar) * 0.6);
+  --tab: calc(var(--overrun) - var(--gap));
+  --r-out: var(--bar);
+  --r-in: min(calc(var(--bar) / 3), calc(var(--overrun) - 2 * var(--gap)));
+}
+
+* { box-sizing: border-box; }
+html { background: var(--lcars-bg); scroll-padding-top: var(--bar); }
+body {
+  margin: 0;
+  background: var(--lcars-bg);
+  color: var(--lcars-text);
+  font: 400 max(1rem, calc(9 * var(--u))) / 1.5556 var(--body);
+  -webkit-text-size-adjust: 100%;
+}
+@media print {
+  html, body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .controls, .mnav { display: none; }
+}
+
+/* Display text cut into a bar: cap height equals the bar, baseline on its bottom edge. */
+.cut {
+  flex: none;
+  align-self: end;
+  font-family: var(--display);
+  font-size: calc(var(--h) / var(--cap-ratio));
+  line-height: 1;
+  letter-spacing: var(--track, -0.05em);
+  padding-inline-end: calc(-1 * var(--track, -0.05em));
+  text-box: trim-both cap alphabetic;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--lcars-display);
+  min-width: 0;
+  margin: 0;
+}
+/* Without text-box, trim by hand from Antonio's metrics: line box top to cap top is 304/2048 em,
+   and the baseline sits 16/2048 em below the line box. */
+@supports not (text-box: trim-both cap alphabetic) {
+  .cut { margin-block: calc(-304em / 2048) calc(16em / 2048); }
+}
+.ink { color: var(--lcars-ink); }
+
+/* Bars, segments and caps. */
+.bar { display: flex; gap: var(--gap); min-width: 0; height: var(--h); }
+.seg { flex: 1 1 0; min-width: var(--gap); background: var(--lcars-frame); }
+.seg.stub { flex: 0 0 calc(var(--h) * 1.25); background: var(--lcars-stub); }
+.seg.accent { background: var(--lcars-accent); }
+.seg.cap {
+  flex: 0 0 calc(var(--h) * 1.5);
+  border-radius: 0 100vmax 100vmax 0;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 calc(var(--h) * 0.5) var(--inset) 0;
+  color: var(--lcars-ink);
+  font: 400 max(0.75rem, calc(var(--h) * 0.45)) / 1 var(--display);
+  letter-spacing: -0.025em;
+}
+.seg.cap > span { text-box: trim-both cap alphabetic; }
+
+/* The frame: elbow top left, top bar to its right, sidebar below it, content in the black field. */
+.frame, .panel {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: var(--sidebar) var(--tab) minmax(0, 1fr);
+  grid-template-rows: var(--bar) var(--tab) auto;
+  background: var(--lcars-bg);
+  color: var(--lcars-text);
+}
+.frame { padding: var(--gap) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); min-height: 100dvh; }
+.elbow { grid-area: 1 / 1 / 3 / 3; position: relative; background: var(--lcars-frame); border-start-start-radius: var(--r-out); }
+.elbow::after {
+  content: "";
+  position: absolute;
+  inset: var(--bar) 0 0 var(--sidebar);
+  background: var(--lcars-bg);
+  border-start-start-radius: var(--r-in);
+}
+.frame > .top, .panel > .top { grid-area: 1 / 3; --h: var(--bar); --track: -0.06em; }
+.panel > .top { overflow: hidden; }
+.frame > .top .cut, .panel > .top .cut { font-weight: 700; }
+.frame > .side, .panel > .side { grid-area: 3 / 1 / 4 / 2; display: flex; flex-direction: column; gap: var(--gap); }
+.frame > main, .panel > .field { grid-area: 3 / 3 / 4 / 4; min-width: 0; }
+
+/* Sidebar blocks: block color, dark ink, label bottom right. */
+.block {
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  min-height: calc(var(--row) * 2);
+  padding: var(--inset) calc(var(--inset) * 2);
+  background: var(--lcars-block);
+  color: var(--lcars-ink);
+  font: 400 max(0.875rem, calc(11 * var(--u))) / 1 var(--display);
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: right;
+}
+.block > span { text-box: trim-both cap alphabetic; }
+.block.accent { background: var(--lcars-accent); }
+.block.stub { background: var(--lcars-stub); }
+.block.frame-c { background: var(--lcars-frame); }
+.block.grow { flex: 1 1 auto; }
+a.block:hover { background: color-mix(in srgb, var(--lcars-block), white 14%); }
+a.block[aria-current] { background: var(--lcars-stub); }
+:focus-visible { outline: calc(2 * var(--u)) solid var(--lcars-focus); outline-offset: var(--gap); }
+
+.side-inner { position: sticky; top: var(--gap); height: calc(100dvh - 2 * var(--gap)); display: flex; flex-direction: column; gap: var(--gap); }
+.side-inner nav { display: flex; flex-direction: column; gap: var(--gap); }
+.side-inner nav .block { min-height: calc(var(--row) * 1.6); }
+
+/* Section heading: tab, the heading cut into a 22u bar, the bar, an end cap holding the section code. */
+.sh { --h: var(--bar-s); display: flex; gap: var(--gap); height: var(--h); margin: calc(var(--bar-s) * 3) 0 var(--bar-s); font-size: inherit; font-weight: 400; }
+.sh::before { content: ""; flex: 0 0 var(--tab); background: var(--lcars-accent); }
+main > section:first-of-type .sh { margin-top: var(--bar-s); }
+h3 {
+  display: flex; align-items: flex-end; gap: var(--gap);
+  margin: calc(var(--bar-s) * 1.5) 0 calc(var(--bar-s) * 0.5);
+  font: 400 calc(var(--row) * 0.8 / var(--cap-ratio)) / 1 var(--display);
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  color: var(--lcars-display);
+}
+h3::before { content: ""; flex: 0 0 var(--tab); height: calc(var(--row) * 0.8); background: var(--lcars-accent); }
+h3 > span { text-box: trim-both cap alphabetic; }
+
+main { padding-bottom: calc(var(--bar) * 3); }
+main p, main li { max-width: 42em; text-wrap: pretty; }
+main ul { padding-left: 1.2em; }
+main li::marker { color: var(--lcars-accent); }
+a { color: var(--lcars-accent); }
+code, pre { font-family: var(--mono); font-size: 0.85em; }
+pre { overflow-x: auto; padding: var(--bar-s); border-left: var(--tab) solid var(--lcars-frame); margin-left: 0; color: var(--lcars-text); }
+.muted { color: var(--lcars-muted); }
+.lede { font-size: 1.15em; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; }
+th, td { padding: calc(var(--gap) * 1.5) calc(var(--gap) * 4) calc(var(--gap) * 1.5) 0; text-align: left; vertical-align: top; font-weight: 400; }
+thead th { font-family: var(--display); color: var(--lcars-display); text-transform: uppercase; letter-spacing: -0.02em; vertical-align: bottom; }
+tbody th { font-family: var(--display); text-transform: uppercase; letter-spacing: -0.02em; white-space: nowrap; }
+figure { margin: var(--bar-s) 0; }
+figcaption { color: var(--lcars-muted); font-size: 0.9em; margin-top: var(--gap); max-width: 42em; }
+blockquote { margin: var(--bar-s) 0; padding-left: calc(var(--bar-s) + var(--gap)); border-left: var(--bar-s) solid var(--lcars-block); max-width: 42em; }
+blockquote p { margin: 0 0 0.25em; font-size: 1.1em; color: var(--lcars-text); }
+blockquote footer { color: var(--lcars-muted); font-size: 0.9em; }
+
+/* An aside: a code block on the left, the note in the black field. */
+.note { display: grid; grid-template-columns: calc(var(--row) * 3.5) minmax(0, 1fr); gap: var(--gap) calc(var(--gap) * 4); margin: var(--bar-s) 0; max-width: calc(42em + var(--row) * 4); }
+.note > .block { min-height: calc(var(--row) * 2); align-self: stretch; }
+.note > div > :first-child { margin-top: 0; }
+.note > div > :last-child { margin-bottom: 0; }
+
+/* Controls: lab pills, half round at both ends, label bottom right; the pressed one takes the stub. */
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap) calc(var(--gap) * 6); margin-top: var(--bar-s); }
+.controls > div { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap); }
+.controls .k { font: 400 calc(var(--row) * 0.8 / var(--cap-ratio)) / 1 var(--display); color: var(--lcars-display); text-transform: uppercase; letter-spacing: -0.05em; margin-right: var(--gap); }
+.btn {
+  appearance: none; border: 0; margin: 0; cursor: pointer;
+  display: inline-flex; align-items: flex-end; justify-content: flex-end;
+  min-height: max(32px, calc(var(--row) * 1.4));
+  min-width: calc(var(--row) * 3.5);
+  padding: 0 calc(var(--row) * 0.7) var(--inset);
+  border-radius: 100vmax;
+  background: var(--lcars-block);
+  color: var(--lcars-ink);
+  font: 400 max(0.875rem, calc(11 * var(--u))) / 1 var(--display);
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.btn > span { text-box: trim-both cap alphabetic; }
+.btn:hover { background: color-mix(in srgb, var(--lcars-block), white 14%); }
+.btn[aria-pressed="true"] { background: var(--lcars-stub); }
+.btn.right { border-radius: 0 100vmax 100vmax 0; }
+.mnav { display: none; flex-wrap: wrap; gap: var(--gap); margin-top: var(--bar-s); }
+
+/* Mini panel: a whole frame at a smaller arm, for the era and mode demos. */
+.panel { --bar: var(--bar-s); --sidebar: calc(var(--bar-s) * 3.4); padding: var(--gap); border-radius: calc(var(--gap) * 2); }
+.panel .block { min-height: calc(var(--row) * 1.3); font-size: max(0.75rem, calc(9 * var(--u))); }
+.panel > .field { padding-bottom: var(--gap); }
+.panel .read { display: grid; grid-template-columns: auto 1fr; gap: 0 calc(var(--gap) * 3); font: 400 max(0.8rem, calc(10 * var(--u))) / 1.35 var(--display); text-transform: uppercase; }
+.panel .read dt { color: var(--lcars-display); }
+.panel .read dd { margin: 0; color: var(--lcars-data); text-align: right; font-variant-numeric: tabular-nums; }
+.panel .read dd.hi { color: var(--lcars-data-hi); }
+.panel .read dd.al { color: var(--lcars-alert-text); }
+.meter { display: flex; gap: var(--u); margin-top: calc(var(--gap) * 2); }
+.meter i { flex: 1; height: calc(9 * var(--u)); background: var(--lcars-meter-on); }
+.meter i.off { background: var(--lcars-meter-off); }
+.panels { display: grid; gap: calc(var(--bar-s) * 1.5) var(--bar-s); grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); }
+.era h3 { margin-top: var(--bar-s); }
+.era p { font-size: 0.95em; overflow-wrap: anywhere; }
+
+/* Swatches. */
+.chip { display: inline-block; width: calc(var(--row) * 1.6); height: calc(var(--row) * 0.8); border-radius: 100vmax; vertical-align: middle; background: var(--c); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lcars-text), transparent 80%); }
+.hx { display: block; color: var(--lcars-muted); font-size: 0.75em; }
+.hx > span { display: none; }
+[data-mode="dark"] > .hx > [data-m="dark"], [data-mode="light"] > .hx > [data-m="light"], [data-mode="print"] > .hx > [data-m="print"] { display: inline; }
+.strip { display: flex; gap: var(--u); margin: var(--gap) 0; }
+.strip > span { flex: 1; height: calc(var(--row) * 0.6); background: var(--c); }
+.strip > span:first-child { border-radius: 100vmax 0 0 100vmax; }
+.strip > span:last-child { border-radius: 0 100vmax 100vmax 0; }
+
+/* The pill of spec/pill.md: start cap and label block in the block color, value on the page, end cap
+   alone. Sizes are proportions of the block height --ph. */
+.pill { --ph: 1.6rem; --c: var(--lcars-accent); --cd: var(--lcars-accent-dim); --vc: var(--lcars-value); --pi: var(--lcars-label-ink); --pb: var(--c);
+  display: inline-flex; align-items: center; height: var(--ph); font: 400 calc(var(--ph) * 0.62) / 1 var(--display); white-space: nowrap; }
+.pill .label { display: inline-flex; align-items: center; height: 100%; padding-inline: calc(var(--ph) * 0.5); border-radius: calc(var(--ph) * 0.5) 0 0 calc(var(--ph) * 0.5); background: var(--pb); color: var(--pi); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; }
+.pill .value { color: var(--vc); padding-inline: calc(var(--ph) * 0.5); }
+.pill .end { width: calc(var(--ph) * 0.5); height: 100%; background: var(--pb); border-radius: 0 calc(var(--ph) * 0.5) calc(var(--ph) * 0.5) 0; }
+.pill.off { --pb: var(--lcars-unlit); --vc: var(--lcars-muted); --pi: var(--lcars-label-ink); }
+.pill.blink { animation: blink var(--blink, 2s) steps(1, end) infinite; }
+@keyframes blink { 0% { --pb: var(--c); } 50% { --pb: var(--cd); } }
+@property --pb { syntax: "<color>"; inherits: true; initial-value: #333; }
+@media (prefers-reduced-motion: reduce) {
+  .pill.blink { animation: none; }
+  .pill.blink .end { outline: 2px dashed var(--cd); outline-offset: 2px; }
+}
+.row { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center; margin: var(--gap) 0 var(--bar-s); }
+
+/* Narrow screens: the sidebar becomes a rail, the nav moves into the field, the radii follow the arm. */
+@media (max-width: 48rem) {
+  :root { --sidebar: calc(30 * var(--u)); --bar: calc(26 * var(--u)); }
+  .side-inner nav, .side-inner .block > span { display: none; }
+  .mnav { display: flex; }
+  .panel { --sidebar: calc(var(--bar-s) * 2); }
+  .note { grid-template-columns: calc(var(--row) * 2) minmax(0, 1fr); }
+}

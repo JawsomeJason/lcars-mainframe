@@ -1,5 +1,7 @@
 # lcars-mainframe
 
+**[Read the docs](https://jawsomejason.github.io/lcars-mainframe/)**
+
 LCARS installs, upgrades and runs a **Memory Alpha vault**: an Obsidian folder that works as a backend. You write in `00 Human/`. Scripts and any AI tool work in `Machine/`, following the `AGENTS.md` in each folder. Your daily numbers are filled by small programs called connectors, not typed by an AI.
 
 Everything is plain Markdown and plain scripts. No AI is needed for the core: collecting numbers, scheduling, daily notes, dashboards and upgrades all run without one.
@@ -9,7 +11,7 @@ Everything is plain Markdown and plain scripts. No AI is needed for the core: co
 Needs Node 22 or later. Git is optional; with it, upgrades merge your edits automatically.
 
 ```sh
-npm i -g lcars-mainframe
+npm i -g github:JawsomeJason/lcars-mainframe
 lcars init ~/Notes          # shows every file it will add, then asks
 ```
 
@@ -22,7 +24,7 @@ lcars status                # version, core files you changed, connector health
 lcars collect --dry-run     # read every tracked number, write nothing
 lcars collect               # write them into today's daily note
 lcars schedule install --at 07:00 --env-file ~/.env.lcars
-lcars upgrade               # after `npm i -g lcars-mainframe@latest`
+lcars upgrade               # after reinstalling a newer lcars-mainframe
 ```
 
 ## Connectors
@@ -51,7 +53,7 @@ The program prints a JSON object (`{"open_prs": 3}`), `key=value` lines, or one 
 
 ## Theme
 
-New vaults use the LCARS theme, generated from [lcars-design-system](https://github.com/JawsomeJason/lcars-design-system) tokens: the LCARS palette, headings in the accent colors, properties and tags as pills. Pick the TNG or 2375 palette in Settings › Style Settings › LCARS. To change the theme, change the design system or `theme/build.mjs`, then `npm run build:theme`; never edit the generated CSS.
+New vaults use the LCARS theme, generated from [lcars-design-system](https://github.com/JawsomeJason/lcars-design-system) tokens: the LCARS palette, headings in the accent colors, properties and tags as pills. Pick the era (TNG, VOY, FC, NEM or PIC) in Settings › Style Settings › LCARS. To change the theme, change the design system or `theme/build.mjs`, then `npm run build:theme`; never edit the generated CSS.
 
 ## Credits
 

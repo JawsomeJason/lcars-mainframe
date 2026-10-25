@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" data-theme="tng" data-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LCARS Mainframe</title>
+<meta name="description" content="Install, upgrade and run an Obsidian vault that works as a backend, with daily numbers filled by connectors and an LCARS theme in every era.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23ea9c72' d='M0 32V12A12 12 0 0 1 12 0H32V10H18A4 4 0 0 0 14 14V32Z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<!-- roles.css and lcars.css are copied from lcars-design-system by `npm run build:docs`. -->
+<link rel="stylesheet" href="roles.css">
+<link rel="stylesheet" href="lcars.css">
+<style>
+  .shot { width: 100%; height: auto; display: block; border-radius: calc(var(--gap) * 2); }
+  .shots img:not([data-era-shot="tng"]) { display: none; }
+  [data-theme="voy"] .shots img[data-era-shot="tng"], [data-theme="fc"] .shots img[data-era-shot="tng"], [data-theme="nem"] .shots img[data-era-shot="tng"], [data-theme="pic"] .shots img[data-era-shot="tng"] { display: none; }
+  [data-theme="voy"] .shots img[data-era-shot="voy"], [data-theme="fc"] .shots img[data-era-shot="fc"], [data-theme="nem"] .shots img[data-era-shot="nem"], [data-theme="pic"] .shots img[data-era-shot="pic"] { display: block; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="elbow"></div>
+  <header class="top bar"><h1 class="cut">LCARS Mainframe</h1><span class="seg"></span><span class="seg stub"></span><span class="seg"></span><span class="seg cap"><span>V0.3.0</span></span></header>
+  <div class="side"><div class="side-inner">
+    <span class="block accent"><span>MF-08</span></span>
+    <nav aria-label="Sections">
+      <a class="block" href="#overview"><span>01 Overview</span></a>
+      <a class="block" href="#install"><span>02 Install</span></a>
+      <a class="block" href="#commands"><span>03 Commands</span></a>
+      <a class="block" href="#connectors"><span>04 Connectors</span></a>
+      <a class="block" href="#customize"><span>05 Customize</span></a>
+      <a class="block" href="#theme"><span>06 Theme</span></a>
+      <a class="block" href="#upgrades"><span>07 Upgrades</span></a>
+      <a class="block" href="#credits"><span>08 Credits</span></a>
+    </nav>
+    <span class="block grow"><span>47</span></span>
+  </div></div>
+  <main>
+    <div class="controls">
+      <div role="group" aria-label="Era"><span class="k">Era</span><button class="btn" type="button" data-set-theme="tng" aria-pressed="true"><span>TNG</span></button><button class="btn" type="button" data-set-theme="voy" aria-pressed="false"><span>VOY</span></button><button class="btn" type="button" data-set-theme="fc" aria-pressed="false"><span>FC</span></button><button class="btn" type="button" data-set-theme="nem" aria-pressed="false"><span>NEM</span></button><button class="btn" type="button" data-set-theme="pic" aria-pressed="false"><span>PIC</span></button></div>
+      <div role="group" aria-label="Mode"><span class="k">Mode</span><button class="btn" type="button" data-set-mode="dark" aria-pressed="true"><span>dark</span></button><button class="btn" type="button" data-set-mode="light" aria-pressed="false"><span>light</span></button></div>
+    </div>
+    <nav class="mnav" aria-label="Sections">
+      <a class="btn right" href="#overview"><span>01 Overview</span></a><a class="btn right" href="#install"><span>02 Install</span></a><a class="btn right" href="#commands"><span>03 Commands</span></a><a class="btn right" href="#connectors"><span>04 Connectors</span></a><a class="btn right" href="#customize"><span>05 Customize</span></a><a class="btn right" href="#theme"><span>06 Theme</span></a><a class="btn right" href="#upgrades"><span>07 Upgrades</span></a><a class="btn right" href="#credits"><span>08 Credits</span></a>
+    </nav>
+
+    <section id="overview">
+      <h2 class="sh"><span class="cut">Overview</span><span class="seg"></span><span class="seg cap"><span>01</span></span></h2>
+      <p class="lede">LCARS Mainframe installs, upgrades and runs a Memory Alpha vault: an Obsidian folder that works as a backend, not a second brain.</p>
+      <p>You write in <code>00 Human/</code>. Scripts and any AI tool work in <code>Machine/</code>, following the <code>AGENTS.md</code> in each folder. Your daily numbers are filled in by small programs called connectors, not typed by an AI.</p>
+      <p>Everything is plain Markdown and plain scripts. No AI is needed for the core: collecting numbers, scheduling, daily notes, dashboards and upgrades all run without one.</p>
+      <figure class="shots">
+        <img class="shot" data-era-shot="tng" src="img/obsidian-tng.png" alt="A daily note in Obsidian with the LCARS theme, TNG era: headings cut into orange bars, tags as blue pills, and callouts framed by elbows." width="1400" height="1076">
+        <img class="shot" data-era-shot="voy" src="img/obsidian-voy.png" alt="The same daily note in the Voyager era: frost-blue bars, gold blocks and peach headings." width="1400" height="1076" loading="lazy">
+        <img class="shot" data-era-shot="fc" src="img/obsidian-fc.png" alt="The same daily note in the First Contact era: bronze bars, lavender blocks and pale cyan headings." width="1400" height="1076" loading="lazy">
+        <img class="shot" data-era-shot="nem" src="img/obsidian-nem.png" alt="The same daily note in the Nemesis era: deep blue bars and cyan headings." width="1400" height="1076" loading="lazy">
+        <img class="shot" data-era-shot="pic" src="img/obsidian-pic.png" alt="The same daily note in the Picard era: slate bars on a blue-black page." width="1400" height="1076" loading="lazy">
+        <figcaption>A daily note in the LCARS theme. Choose an era above and the screenshot follows.</figcaption>
+      </figure>
+    </section>
+
+    <section id="install">
+      <h2 class="sh"><span class="cut">Install</span><span class="seg"></span><span class="seg cap"><span>02</span></span></h2>
+      <p>Needs Node 22 or later. Git is optional; with it, upgrades merge your edits automatically.</p>
+      <pre><code>npm i -g github:JawsomeJason/lcars-mainframe
+lcars init ~/Notes          # shows every file it will add, then asks</code></pre>
+      <p>Open <code>~/Notes</code> in Obsidian, then run the onboarding workflow with your AI tool: <code>Machine/Workflows/onboarding/</code>.</p>
+    </section>
+
+    <section id="commands">
+      <h2 class="sh"><span class="cut">Commands</span><span class="seg"></span><span class="seg cap"><span>03</span></span></h2>
+      <div class="scroll"><table><tbody>
+        <tr><th scope="row"><code>lcars init &lt;dir&gt;</code></th><td>Install a new vault. Prints every file it will add and asks first.</td></tr>
+        <tr><th scope="row"><code>lcars status</code></th><td>The installed version, the core files you changed, and connector health.</td></tr>
+        <tr><th scope="row"><code>lcars collect --dry-run</code></th><td>Read every tracked number and write nothing.</td></tr>
+        <tr><th scope="row"><code>lcars collect</code></th><td>Write today’s numbers into today’s daily note.</td></tr>
+        <tr><th scope="row"><code>lcars schedule install --at 07:00 --env-file ~/.env.lcars</code></th><td>Run <code>collect</code> every day at that time (launchd on macOS).</td></tr>
+        <tr><th scope="row"><code>lcars upgrade</code></th><td>Bring the vault up to the installed version of <code>lcars</code>, merging your edits.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="connectors">
+      <h2 class="sh"><span class="cut">Connectors</span><span class="seg"></span><span class="seg cap"><span>04</span></span></h2>
+      <p>A connector is a folder in <code>local/connectors/</code> with a <code>connector.json</code> and any program that prints numbers. Connectors are yours: they live in your vault, not in the core.</p>
+      <pre><code>{
+  "description": "Open pull requests assigned to me.",
+  "properties": ["open_prs"],
+  "run": ["node", "open-prs.cjs"],
+  "env": ["GITHUB_TOKEN"],
+  "bin": []
+}</code></pre>
+      <p>The program prints a JSON object (<code>{"open_prs": 3}</code>), <code>key=value</code> lines, or one bare number. A connector runs when its property is listed, empty, in the frontmatter of <code>00 Human/80 Templates/Daily.md</code>.</p>
+      <div class="note"><span class="block accent"><span>ERR</span></span><div>
+        <p>A failure is written as <code>unknown</code>, never <code>0</code>, and never overwrites a value already in the note. Each connector runs in its own process group with a timeout, and the daily note is written atomically.</p>
+      </div></div>
+      <p>See <code>local/AGENTS.md</code> in a vault for the full rules, and <a href="https://github.com/JawsomeJason/lcars-mainframe/tree/main/connectors/youtube"><code>connectors/youtube/</code></a> for an example.</p>
+    </section>
+
+    <section id="customize">
+      <h2 class="sh"><span class="cut">Customize</span><span class="seg"></span><span class="seg cap"><span>05</span></span></h2>
+      <p>Make it yours without forking:</p>
+      <ul>
+        <li><strong>Rules.</strong> Put an <code>AGENTS.local.md</code> next to any <code>AGENTS.md</code>. Your file wins.</li>
+        <li><strong>Workflows and connectors.</strong> Put them in <code>local/workflows/&lt;name&gt;/</code> and <code>local/connectors/&lt;name&gt;/</code>. One with the same name as a core one replaces it.</li>
+        <li><strong>Core files.</strong> Edit them if you want; <code>lcars upgrade</code> merges your edit with the new version.</li>
+      </ul>
+    </section>
+
+    <section id="theme">
+      <h2 class="sh"><span class="cut">Theme</span><span class="seg"></span><span class="seg cap"><span>06</span></span></h2>
+      <p>New vaults use the LCARS theme, generated from the <a href="https://jawsomejason.github.io/lcars-design-system/">LCARS Design System</a> tokens and built in its grammar: headings cut into bars, callouts framed by elbows and sidebars, properties as contact rows, and tags as pills.</p>
+      <p>Pick the era in Settings › Style Settings › LCARS: TNG, VOY, FC, NEM or PIC. Obsidian’s light and dark appearance switch the mode.</p>
+      <p>To change the theme, change the design system or <code>theme/build.mjs</code>, then run <code>npm run build:theme</code>. Never edit the generated CSS.</p>
+    </section>
+
+    <section id="upgrades">
+      <h2 class="sh"><span class="cut">Upgrades</span><span class="seg"></span><span class="seg cap"><span>07</span></span></h2>
+      <p><code>lcars</code> records what it installed in <code>.lcars/</code> inside the vault: the version, and the exact content of every file it wrote. Keep that folder, and sync it with the rest of the vault.</p>
+      <p>On <code>lcars upgrade</code>, each file falls into one of three cases:</p>
+      <div class="scroll"><table><tbody>
+        <tr><th scope="row">You left it alone</th><td>It is replaced with the new version.</td></tr>
+        <tr><th scope="row">You changed it</th><td>Your edit and the new version are merged, three ways, against what was installed.</td></tr>
+        <tr><th scope="row">Both changed the same lines</th><td>Your file stays as it is, and the new version is written beside it as <code>&lt;file&gt;.new</code> for you to merge.</td></tr>
+      </tbody></table></div>
+      <p>Settings files such as <code>.obsidian/*.json</code> are seeds: installed once, then yours. The design notes are in <a href="https://github.com/JawsomeJason/lcars-mainframe/blob/main/docs/design.md"><code>docs/design.md</code></a>.</p>
+    </section>
+
+    <section id="credits">
+      <h2 class="sh"><span class="cut">Credits</span><span class="seg"></span><span class="seg cap"><span>08</span></span></h2>
+      <p>The vault layout, workflows and the Human and Machine split come from Eric Michaud’s EMAI (Easy Machine AI) Starter Vault, shown in his video <a href="https://youtu.be/4z2i6UsQG1k">Build an Obsidian BACKEND Not a Second Brain!</a></p>
+      <p>Source: <a href="https://github.com/JawsomeJason/lcars-mainframe">github.com/JawsomeJason/lcars-mainframe</a>.</p>
+      <p class="muted">LCARS was designed by Michael Okuda for <cite>Star Trek: The Next Generation</cite> and belongs to Paramount. This is a fan project, not affiliated with or endorsed by Paramount. Antonio and Lato are under the SIL Open Font License.</p>
+    </section>
+  </main>
+</div>
+<script>
+(() => {
+  const root = document.documentElement;
+  const valid = { theme: ['tng', 'voy', 'fc', 'nem', 'pic'], mode: ['dark', 'light'] };
+  const load = (k) => { try { return localStorage.getItem('lcars-' + k); } catch { return null; } };
+  const save = (k, v) => { try { localStorage.setItem('lcars-' + k, v); } catch {} };
+  function set(key, value, keep = true) {
+    if (!valid[key].includes(value)) return;
+    root.dataset[key] = value;
+    for (const b of document.querySelectorAll('[data-set-' + key + ']')) b.setAttribute('aria-pressed', String(b.getAttribute('data-set-' + key) === value));
+    if (keep) save(key, value);
+  }
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-set-theme], [data-set-mode]');
+    if (!b) return;
+    for (const k of ['theme', 'mode']) { const v = b.getAttribute('data-set-' + k); if (v) set(k, v); }
+  });
+  for (const k of ['theme', 'mode']) { const v = load(k); if (v) set(k, v, false); }
+  const links = new Map([...document.querySelectorAll('.side-inner nav a')].map((a) => [a.hash.slice(1), a]));
+  const io = new IntersectionObserver((entries) => {
+    for (const en of entries) {
+      if (!en.isIntersecting) continue;
+      for (const a of links.values()) a.removeAttribute('aria-current');
+      links.get(en.target.id)?.setAttribute('aria-current', 'location');
+    }
+  }, { rootMargin: '-15% 0px -75% 0px' });
+  for (const id of links.keys()) { const s = document.getElementById(id); if (s) io.observe(s); }
+})();
+</script>
+</body>
+</html>
