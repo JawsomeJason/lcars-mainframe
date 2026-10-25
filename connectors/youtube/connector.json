@@ -1,0 +1,6 @@
+{
+  "description": "Subscriber count of one YouTube channel, from the official YouTube Data API v3.",
+  "properties": ["youtube_subscribers"],
+  "run": ["node", "youtube.cjs"],
+  "env": ["YOUTUBE_API_KEY", "YOUTUBE_CHANNEL_ID"]
+}

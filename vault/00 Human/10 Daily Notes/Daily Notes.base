@@ -1,0 +1,14 @@
+filters:
+  and:
+    - file.inFolder("00 Human/10 Daily Notes")
+    - file.ext == "md"
+    - file.name != "AGENTS"
+views:
+  - type: table
+    name: Every day
+    order:
+      - file.name
+      - status
+    sort:
+      - property: file.name
+        direction: DESC

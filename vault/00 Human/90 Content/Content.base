@@ -1,0 +1,17 @@
+filters:
+  and:
+    - file.inFolder("00 Human/90 Content")
+    - file.ext == "md"
+    - file.name != "AGENTS"
+views:
+  - type: table
+    name: All content
+    order:
+      - file.name
+      - status
+      - priority
+      - created
+      - source
+    sort:
+      - property: created
+        direction: DESC
