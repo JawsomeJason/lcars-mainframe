@@ -49,8 +49,14 @@ The program prints a JSON object (`{"open_prs": 3}`), `key=value` lines, or one 
 
 `lcars` tracks what it installed in `.lcars/` inside the vault. Keep that folder; sync it with the rest of the vault.
 
+## Theme
+
+New vaults use the LCARS theme, generated from [lcars-design-system](https://github.com/JawsomeJason/lcars-design-system) tokens: the LCARS palette, headings in the accent colors, properties and tags as pills. Pick the TNG or 2375 palette in Settings › Style Settings › LCARS. To change the theme, change the design system or `theme/build.mjs`, then `npm run build:theme`; never edit the generated CSS.
+
 ## Credits
 
 The vault layout, workflows and the Human vs Machine split come from Eric Michaud's EMAI (Easy Machine AI) Starter Vault, shown in his video [Build an Obsidian BACKEND Not a Second Brain!](https://youtu.be/4z2i6UsQG1k). Community: <https://www.skool.com/easymachineai>.
 
 Design notes: [docs/design.md](docs/design.md).
+
+LCARS was designed by Michael Okuda for *Star Trek: The Next Generation* and belongs to Paramount. This is a fan project, not affiliated with or endorsed by Paramount.

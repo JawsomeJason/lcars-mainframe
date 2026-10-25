@@ -1,10 +1,25 @@
 {
   "name": "lcars-mainframe",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Install, upgrade and run a Memory Alpha vault: an Obsidian workspace that works as a backend for people, scripts and any AI tool.",
-  "bin": { "lcars": "bin/lcars.js" },
-  "files": ["bin", "lib", "connectors", "vault"],
-  "engines": { "node": ">=22" },
-  "scripts": { "test": "node --test" },
-  "license": "MIT"
+  "bin": {
+    "lcars": "bin/lcars.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "connectors",
+    "vault"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "build:theme": "node theme/build.mjs"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "lcars-design-system": "github:JawsomeJason/lcars-design-system#semver:^0.2.0"
+  }
 }

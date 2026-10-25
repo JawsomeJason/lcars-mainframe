@@ -188,6 +188,9 @@ test('the shipped Daily template: onboarding properties survive a core change el
 
 test('classify: Obsidian config, FINDINGS and .gitignore are seeds', () => {
   assert.equal(sync.classify('.obsidian/app.json'), 'seed');
+  assert.equal(sync.classify('.obsidian/plugins/dataview/data.json'), 'seed');
+  assert.equal(sync.classify('.obsidian/plugins/dataview/main.js'), 'system');
+  assert.equal(sync.classify('.obsidian/themes/LCARS/theme.css'), 'system');
   assert.equal(sync.classify('Machine/Workflows/today/FINDINGS.md'), 'seed');
   assert.equal(sync.classify('.gitignore'), 'seed');
   assert.equal(sync.classify('Machine/Workflows/today/SKILL.md'), 'system');
@@ -231,4 +234,25 @@ test('review: a record path outside the vault is refused', () => {
     const vault = tree(tmp(), { '.lcars/install.json': JSON.stringify({ format: 1, core: CORE1, files: { [key]: { class: 'system', sha256: 'x' } } }) });
     assert.throws(() => sync.readRecord(vault), /outside the vault/, key);
   }
+});
+
+test('a file the core reclassifies from seed to system starts receiving upgrades, keeping owner edits', () => {
+  const v1 = { '.obsidian/themes/T/theme.css': 'a\n', '.obsidian/themes/T/manifest.json': '{}\n' };
+  const v2 = { '.obsidian/themes/T/theme.css': 'b\n', '.obsidian/themes/T/manifest.json': '{"v":2}\n' };
+  const p1 = tree(tmp(), v1), p2 = tree(tmp(), v2), vault = tmp();
+  run(vault, p1, CORE1);
+  // Simulate a vault installed when everything under .obsidian/ was a seed.
+  const file = path.join(vault, sync.RECORD), record = JSON.parse(fs.readFileSync(file, 'utf8'));
+  for (const k of Object.keys(record.files)) record.files[k] = { class: 'seed' };
+  fs.writeFileSync(file, JSON.stringify(record));
+  fs.writeFileSync(path.join(vault, '.obsidian/themes/T/manifest.json'), '{"owner":1}\n');
+  const up = run(vault, p2, CORE2);
+  assert.equal(up.kinds['.obsidian/themes/T/theme.css'], 'keep');
+  assert.equal(up.kinds['.obsidian/themes/T/manifest.json'], 'keep');
+  assert.equal(read(vault, '.obsidian/themes/T/manifest.json'), '{"owner":1}\n');
+  assert.equal(sync.readRecord(vault).files['.obsidian/themes/T/theme.css'].class, 'system');
+  // From here on, unedited copies follow the core.
+  const p3 = tree(tmp(), { ...v2, '.obsidian/themes/T/theme.css': 'c\n' });
+  fs.writeFileSync(path.join(vault, '.obsidian/themes/T/theme.css'), 'b\n');
+  assert.equal(run(vault, p3, { name: 'lcars-mainframe', version: '3.0.0' }).kinds['.obsidian/themes/T/theme.css'], 'replace');
 });

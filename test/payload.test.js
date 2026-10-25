@@ -46,3 +46,12 @@ test('core connectors parse', () => {
   assert.deepEqual(problems, []);
   assert.ok(connectors.some(c => c.name === 'youtube'));
 });
+
+test('the LCARS theme is generated from the pinned design system and up to date', () => {
+  const r = require('node:child_process').spawnSync(process.execPath, [path.join(ROOT, 'theme/build.mjs'), '--check'], { encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  const css = fs.readFileSync(path.join(VAULT, '.obsidian/themes/LCARS/theme.css'), 'utf8');
+  // Colors come from roles: no hex outside the generated role variables.
+  const stray = css.split('\n').filter(l => /#[0-9a-f]{3,6}\b/i.test(l) && !/^\s*--lcars-[a-z0-9-]+: #/.test(l) && !/#000;/.test(l));
+  assert.deepEqual(stray, []);
+});
