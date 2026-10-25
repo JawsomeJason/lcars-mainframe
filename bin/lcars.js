@@ -172,4 +172,7 @@ async function main(argv = process.argv.slice(2)) {
   }
 }
 
+// A closed pipe (lcars status | head) is a normal end, not a crash.
+process.stdout.on('error', error => { if (error.code === 'EPIPE') process.exit(0); throw error; });
+
 main().then(code => { process.exitCode = code; }, error => { process.stderr.write(error.message + '\n'); process.exitCode = 1; });
