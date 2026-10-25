@@ -5,25 +5,25 @@
   "showWeeklyNote": false,
   "sourceSettings": {
     "wordCount": {
-      "color": "#ffcc66",
+      "color": "#eb943a",
       "display": "calendar-and-menu",
       "wordsPerDot": 250
     },
     "tasks": {
-      "color": "#ff9900",
+      "color": "#eb943a",
       "display": "calendar-and-menu",
       "maxIncompleteTaskDots": 1
     },
     "links": {
-      "color": "#99ccff",
+      "color": "#8899ff",
       "display": "menu"
     },
     "backlinks": {
-      "color": "#9999ff",
+      "color": "#baa4e5",
       "display": "menu"
     },
     "zettels": {
-      "color": "#cc99cc",
+      "color": "#eb943a",
       "display": "calendar-and-menu"
     },
     "emoji-tags": {
