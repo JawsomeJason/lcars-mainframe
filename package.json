@@ -16,10 +16,11 @@
   },
   "scripts": {
     "test": "node --test",
-    "build:theme": "node theme/build.mjs"
+    "build:theme": "node theme/build.mjs",
+    "build:docs": "node -e \"for (const f of ['roles.css', 'lcars.css']) require('fs').copyFileSync(require.resolve('lcars-design-system/docs/' + f), 'docs/' + f)\""
   },
   "license": "MIT",
   "devDependencies": {
-    "lcars-design-system": "github:JawsomeJason/lcars-design-system#semver:^0.5.0"
+    "lcars-design-system": "github:JawsomeJason/lcars-design-system#semver:^0.6.0"
   }
 }
