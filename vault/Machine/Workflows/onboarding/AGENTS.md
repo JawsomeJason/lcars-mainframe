@@ -1,6 +1,6 @@
 # onboarding
 
-Shapes a fresh workspace around what the owner wants to track. It sets up **structure**: the daily note's properties, the content tracker's fields, and the collector list. It does not write the owner's notes, context, or ideas for them.
+Shapes a fresh workspace around what the owner wants to track. It sets up **structure**: the daily note's properties, the content tracker's fields, and the connectors that fill the numbers. It does not write the owner's notes, context, or ideas for them.
 
 ## Read first
 
@@ -12,12 +12,12 @@ Shapes a fresh workspace around what the owner wants to track. It sets up **stru
 
 - `00 Human/80 Templates/Daily.md` and `00 Human/80 Templates/Content Idea.md` (you will edit these).
 - `00 Human/10 Daily Notes/Daily Notes.base` and `00 Human/90 Content/Content.base` (you will add columns).
-- `Machine/Scripts/collectors/AGENTS.md` and `collectors.json`.
+- `local/AGENTS.md` (how to write a connector) and the connectors already in `local/connectors/`.
 
 ## You may change
 
 - Template **properties** and the `.base` column lists, after the owner approves the list.
-- `Machine/Scripts/collectors/collectors.json`, and new collector scripts in that folder.
+- New connector folders in `local/connectors/`.
 
 ## Never
 
@@ -28,3 +28,5 @@ Shapes a fresh workspace around what the owner wants to track. It sets up **stru
 ## After the run
 
 Append to today's daily note `## Activity`. Add a `FINDINGS.md` entry: what was set up, which questions confused the owner, what to ask differently next time.
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

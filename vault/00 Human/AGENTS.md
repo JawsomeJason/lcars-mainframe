@@ -18,3 +18,5 @@ Everything in here is the owner's own thinking and the facts of their life and w
 Drafts, research, and anything you generated go in `Machine/`. Link to them from here if the owner wants.
 
 Each subfolder has its own `AGENTS.md`. Read the one you are about to write in.
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

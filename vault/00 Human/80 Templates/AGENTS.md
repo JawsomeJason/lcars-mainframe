@@ -17,3 +17,5 @@ The shape of every note type. **The properties in these templates are the databa
 - Property names are lowercase `snake_case` with no spaces (`youtube_subscribers`, not `YouTube Subs`).
 - Status-like properties use a short fixed list of values, written in the template. Keep that list short.
 - The onboarding workflow (`Machine/Workflows/onboarding/`) is the normal way these get shaped to the owner.
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

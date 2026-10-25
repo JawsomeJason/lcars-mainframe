@@ -19,3 +19,5 @@ Ends the day: what got done is ticked, what did not is carried forward, and the 
 ## Output
 
 Updated task properties, and tomorrow's note with carried-over tasks (if the owner wants it created now).
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

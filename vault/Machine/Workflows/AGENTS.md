@@ -40,3 +40,5 @@ Copy `_template/` to a new lowercase-hyphenated folder name, fill in the three f
 ## Using these as skills in an AI tool
 
 The `SKILL.md` files work as skills where the tool loads skill folders. Point the tool at this folder (for example, link `Machine/Workflows/<name>` into the tool's skills folder) rather than copying, so there is one copy to keep current.
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

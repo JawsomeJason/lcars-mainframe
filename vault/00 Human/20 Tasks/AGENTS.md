@@ -9,3 +9,5 @@ One task per file, created from `../80 Templates/Task.md`.
 - Link the task to its project with `project: "[[Project Name]]"`. A task without a project does not show on the Projects page.
 - When a task is done, set `status: completed` and `date_completed`. Do not delete it.
 - Write the task in the owner's words. Do not expand it into a plan unless they ask; a plan goes in `Machine/`.
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

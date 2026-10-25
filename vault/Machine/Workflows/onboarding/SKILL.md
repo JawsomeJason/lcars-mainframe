@@ -1,6 +1,6 @@
 ---
 name: onboarding
-description: Set up a fresh workspace. Ask the owner which daily numbers and content fields to track, then shape the daily template, the content tracker, and the collector list around the answers. Use on first setup or when tracking changes.
+description: Set up a fresh workspace. Ask the owner which daily numbers and content fields to track, then shape the daily template, the content tracker, and the connectors around the answers. Use on first setup or when tracking changes.
 ---
 
 # onboarding
@@ -26,17 +26,16 @@ Then:
 
 1. Add each property, empty, to the frontmatter of `00 Human/80 Templates/Daily.md`, below the comment line.
 2. Add each property name to `order:` in `00 Human/10 Daily Notes/Daily Notes.base` so it shows as a column.
-3. Add each one to `Machine/Scripts/collectors/collectors.json` (see `Machine/Scripts/collectors/AGENTS.md`):
-   - A source a script can read: `"enabled": false` until the script exists and its key is set.
-   - Typed by hand: `"manual": true`. The owner fills it; no agent ever does.
 
-## 2. Collectors
+A property in the template is tracked. If a connector provides it, `lcars collect` fills it; if none does, the owner types it and no agent ever fills it.
 
-For each scriptable number, write or reuse a collector in `Machine/Scripts/collectors/`, following that folder's `AGENTS.md`. Tell the owner the exact environment variable to set for its key. Never ask for the key itself.
+## 2. Connectors
 
-Test with: `node "Machine/Scripts/collectors/collect.cjs" --dry-run`
+For each number a program can read, write or reuse a connector in `local/connectors/<name>/`, following `local/AGENTS.md`. Tell the owner the exact environment variable to set for its key. Never ask for the key itself.
 
-A collector that cannot reach its source must print `unknown`. Enable it in `collectors.json` only after a dry run shows a real number.
+Test it: `lcars collect --only <name> --dry-run`
+
+A connector that cannot reach its source must fail (exit non-zero), so the number is written as `unknown`. Run `lcars status` to see which properties have a working connector.
 
 ## 3. Content tracker
 

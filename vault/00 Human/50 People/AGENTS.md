@@ -8,3 +8,5 @@ One note per person, created from `../80 Templates/Person.md`. HQ's Relationship
 - Log a conversation as a dated line under `## Log` with a link to the source (email, meeting note).
 - Keep `## Next step` to one concrete action.
 - Contact details are fine. Passwords, account numbers, and anything sensitive are not.
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

@@ -22,12 +22,12 @@ This is Memory Alpha, your workspace: ordinary Markdown files in a folder you ow
 - `00 Human/80 Templates`: the shape of each note type. Their properties are the schema.
 - `00 Human/90 Content`: your content tracker. New ideas go in `Ideas`.
 - `Machine/Workflows`: repeatable jobs, one folder each.
-- `Machine/Scripts`: scripts that fill your daily numbers.
 - `Machine/Outputs`: results produced by HQ or its workflows.
+- `local`: your own connectors (the programs that fill your daily numbers) and workflows. Upgrades never touch it.
 
 ## Opening it in Obsidian
 
-Open this folder as a vault. Obsidian asks whether to trust its plugins: choose **Trust author and enable plugins**. The vault comes with Lean Terminal (a terminal inside Obsidian, for running your AI tool), Templater, Dataview, Calendar, Full Calendar, Style Settings, and the Blue Topaz theme. Remove any you don't want in Settings → Community plugins.
+Open this folder as a vault. Obsidian asks whether to trust its plugins: choose **Trust author and enable plugins**. The vault comes with Templater, Dataview, Calendar, Full Calendar, Style Settings, and the Blue Topaz theme. Remove any you don't want in Settings → Community plugins.
 
 ## First step
 

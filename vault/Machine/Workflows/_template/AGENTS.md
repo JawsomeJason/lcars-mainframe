@@ -27,3 +27,5 @@ Do not load anything else "for context".
 ## After the run
 
 Add a dated entry to `FINDINGS.md`. If the result has numbers that only exist later (views, replies, sales), say when to come back for them.
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

@@ -21,3 +21,5 @@ Starts the day: fresh numbers into today's note, then the single most important 
 ## Output
 
 A short plan in chat. If the owner accepts it, the chosen #1 goes into today's `## Focus`, in their words.
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

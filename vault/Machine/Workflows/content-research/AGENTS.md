@@ -21,3 +21,5 @@ Takes a topic, pulls 5 to 10 real videos or posts from people in the owner's spa
 ## Output
 
 `Machine/Outputs/YYYY-MM-DD content-research <topic>/` with `sources.md` (every link and what came from it), `comments.md` (grouped quotes with links), and `ideas.md` (ranked ideas, each with evidence).
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

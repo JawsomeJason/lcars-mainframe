@@ -20,3 +20,5 @@ Looks at the last seven days as a table, the way `Daily Notes.base` shows them, 
 ## Output
 
 `Machine/Outputs/YYYY-MM-DD weekly-review.md`
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.

@@ -8,3 +8,5 @@ One note per project, created from `../80 Templates/Project.md`. Name the note a
 - Keep `due_date` and `## Next steps` current when the owner tells you about progress.
 - Tasks link here with `project:`; do not copy task text into the project note.
 - Research, drafts, and plans you generate for a project go in `Machine/Outputs/`, linked from the project note.
+
+> **Owner overrides:** if an `AGENTS.local.md` sits beside this file, read it next. Where the two disagree, `AGENTS.local.md` wins.
