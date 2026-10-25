@@ -193,3 +193,42 @@ test('classify: Obsidian config, FINDINGS and .gitignore are seeds', () => {
   assert.equal(sync.classify('Machine/Workflows/today/SKILL.md'), 'system');
   assert.equal(sync.classify('00 Human/80 Templates/Daily.md'), 'system');
 });
+
+test('review: a file edited after the plan is never overwritten', () => {
+  const p1 = tree(tmp(), { 'a.md': 'core1\n' }), p2 = tree(tmp(), { 'a.md': 'core2\n' }), vault = tmp();
+  run(vault, p1, CORE1);
+  const record = sync.readRecord(vault);
+  const actions = sync.plan({ payloadDir: p2, vault, record });
+  fs.writeFileSync(path.join(vault, 'a.md'), 'owner typed this while the diff was open\n');
+  assert.throws(() => sync.apply({ vault, payloadDir: p2, record, actions, core: CORE2 }), /Changed since the plan was made/);
+  assert.equal(read(vault, 'a.md'), 'owner typed this while the diff was open\n');
+  assert.equal(sync.readRecord(vault).core.version, '1.0.0');
+});
+
+test('review: a case-only rename in the core never deletes the file', () => {
+  const p1 = tree(tmp(), { 'Foo.md': 'x\n' }), p2 = tree(tmp(), { 'foo.md': 'x\n' }), vault = tmp();
+  run(vault, p1, CORE1);
+  const up = run(vault, p2, CORE2);
+  assert.equal(up.kinds['Foo.md'], 'forget');
+  assert.ok(fs.readdirSync(vault).some(f => f.toLowerCase() === 'foo.md'));
+});
+
+test('review: a second conflict never overwrites a .new the owner is merging', () => {
+  const V3 = { ...V2, 'conflict.md': 'title\nshared line, core v3 wording\nend\n' };
+  const p1 = tree(tmp(), V1), p2 = tree(tmp(), V2), p3 = tree(tmp(), V3), vault = tmp();
+  run(vault, p1, CORE1);
+  ownerEdits(vault);
+  run(vault, p2, CORE2);
+  fs.writeFileSync(path.join(vault, 'conflict.md.new'), 'half-merged by the owner\n');
+  run(vault, p3, { name: 'lcars-mainframe', version: '3.0.0' });
+  assert.equal(read(vault, 'conflict.md.new'), 'half-merged by the owner\n');
+  assert.equal(read(vault, 'conflict.md.3.0.0.new'), V3['conflict.md']);
+  assert.ok(sync.editedFiles(vault, sync.readRecord(vault)).some(e => e.path === 'conflict.md.3.0.0.new'));
+});
+
+test('review: a record path outside the vault is refused', () => {
+  for (const key of ['../victim.txt', '/etc/hosts', 'a/../../b', '.lcars/install.json']) {
+    const vault = tree(tmp(), { '.lcars/install.json': JSON.stringify({ format: 1, core: CORE1, files: { [key]: { class: 'system', sha256: 'x' } } }) });
+    assert.throws(() => sync.readRecord(vault), /outside the vault/, key);
+  }
+});

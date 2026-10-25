@@ -24,18 +24,25 @@ const HELP = `lcars ${pkg.version}: install, upgrade and run a Memory Alpha vaul
 
   --vault <dir>   the vault (default: the nearest folder above here with .lcars/)
   --dry-run       show what would happen, write nothing
-  --yes           apply without asking (needed when not run in a terminal)`;
+  --yes           apply without asking (needed when not run in a terminal)
+  --force         allow upgrade to go back to an older lcars`;
 
+const VALUED = new Set(['vault', 'only', 'at', 'env-file']);
+const BOOLEAN = new Set(['dry-run', 'yes', 'force', 'version', 'help']);
+
+/** Unknown flags are errors: a typo like --dryrun must never fall through to a real write. */
 function parseArgs(argv) {
   const opts = { _: [] };
-  const valued = new Set(['--vault', '--only', '--at', '--env-file']);
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
-    if (valued.has(arg)) {
-      if (i + 1 >= argv.length) throw Error(arg + ' needs a value.');
-      opts[arg.slice(2)] = argv[++i];
-    } else if (arg.startsWith('--')) opts[arg.slice(2)] = true;
-    else opts._.push(arg);
+    if (!arg.startsWith('--')) { opts._.push(arg); continue; }
+    const [name, inline] = arg.slice(2).split(/=(.*)/s);
+    if (VALUED.has(name)) {
+      const value = inline !== undefined ? inline : argv[++i];
+      if (value === undefined || value === '') throw Error('--' + name + ' needs a value.');
+      opts[name] = value;
+    } else if (BOOLEAN.has(name) && inline === undefined) opts[name] = true;
+    else throw Error('Unknown option: ' + arg + '\n\n' + HELP);
   }
   return opts;
 }
@@ -46,6 +53,13 @@ function findVault(opts) {
     if (fs.existsSync(path.join(dir, sync.RECORD))) return dir;
     if (dir === path.dirname(dir)) throw Error('Not inside an lcars vault. Run `lcars init` or pass --vault <dir>.');
   }
+}
+
+/** Whether version a is newer than b (plain x.y.z). */
+function newer(a, b) {
+  const [x, y] = [a, b].map(v => v.split('.').map(Number));
+  for (let i = 0; i < 3; i++) if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0);
+  return false;
 }
 
 const LABEL = {
@@ -87,6 +101,9 @@ async function syncCommand(vault, opts, mode) {
   const record = sync.readRecord(vault);
   if (mode === 'init' && record) throw Error('Already an lcars vault (' + record.core.version + '). Use `lcars upgrade`.');
   if (mode === 'upgrade' && !record) throw Error('No install record in ' + vault + '. Use `lcars init`.');
+  if (record && newer(record.core.version, CORE.version) && !opts.force) {
+    throw Error('This vault has lcars ' + record.core.version + ', newer than this lcars (' + CORE.version + '). Upgrade lcars, or pass --force to go back.');
+  }
   const actions = sync.plan({ payloadDir: PAYLOAD, vault, record });
   const from = record ? record.core.version : 'nothing';
   process.stdout.write((mode === 'init' ? 'Install' : 'Upgrade') + ' lcars ' + from + ' -> ' + CORE.version + ' in ' + vault + '\n\n');
@@ -130,6 +147,7 @@ async function main(argv = process.argv.slice(2)) {
   const opts = parseArgs(argv);
   const [command, sub] = opts._;
   if (opts.version) { process.stdout.write(pkg.version + '\n'); return 0; }
+  if (opts.help) { process.stdout.write(HELP + '\n'); return 0; }
   switch (command) {
     case 'init': {
       const vault = path.resolve(opts.vault || sub || '.');

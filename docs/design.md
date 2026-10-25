@@ -122,6 +122,20 @@ Three candidates were sketched (Opus, Fable, Sonnet) and judged by an independen
 - **Generated template regions from a registry** (C). Solves adjacent-line conflicts for tracked properties, at the cost of a second store and a dependence on Obsidian keeping comments.
 - **A manifest of file classes and hashes.** Two lists that must agree with the `vault/` tree; the path rule plus the record derives both.
 
+## Implementation reconciliation
+
+Accepted after an independent review of 0.1.0 (each with a regression test):
+
+- `apply` re-hashes every file it will write, under the lock, and writes nothing if one changed after the plan was shown.
+- A path the core dropped that matches a shipped path except for case is forgotten, not deleted (case-insensitive disks).
+- A conflict never overwrites an existing, different `<file>.new`; the newer core text goes to `<file>.<version>.new`.
+- `install.json` paths must stay inside the vault: a synced vault is untrusted input.
+- `upgrade` refuses to go back to an older lcars without `--force`.
+- Unknown CLI flags are errors, and `--key=value` is accepted.
+- `collect` never replaces a value already in today's note with `unknown`; it reports the failure and keeps the value. This refines "failures write `unknown`": they do, into an empty field.
+- A connector runs in its own process group so a timeout kills what it started; the daily note is written atomically.
+- The `--env-file` wrapper runs collect even when the env file's last command exits non-zero.
+
 ## Open questions
 
 - Two machines upgrading one Syncthing vault at once: the lock is per machine. Document "upgrade on one machine".

@@ -115,3 +115,40 @@ test('a non-number value is unknown with the reason', async () => {
   const { out } = await run(vault, tree({}), { dryRun: true });
   assert.match(out, /^alpha_total: unknown {2}\(alpha returned "lots" for alpha_total, not a number\.\)$/m);
 });
+
+const { setProperty, getProperty } = require('../lib/collect');
+
+test('review: a failed rerun keeps a reading that already worked', async () => {
+  const vault = tree({
+    '00 Human/80 Templates/Daily.md': TEMPLATE,
+    ...prefixed('local/connectors/alpha/', connector(['alpha_total'], 'if (process.env.LCARS_TEST_FAIL) { console.error("down"); process.exit(1) } console.log(14)')),
+  });
+  await run(vault, tree({}));
+  process.env.LCARS_TEST_FAIL = '1';
+  try {
+    const { out } = await run(vault, tree({}));
+    assert.match(out, /^alpha_total: unknown {2}\(down; kept 14\)$/m);
+  } finally { delete process.env.LCARS_TEST_FAIL; }
+  const note = fs.readFileSync(path.join(vault, '00 Human/10 Daily Notes', localDate() + '.md'), 'utf8');
+  assert.match(note, /^alpha_total: 14$/m);
+});
+
+test('review: frontmatter edge cases', () => {
+  assert.equal(setProperty('---\n---\n# x\n', 'a', 1), '---\na: 1\n---\n# x\n');
+  assert.equal(setProperty('---\r\nb: 2\r\n---\r\n', 'a', 1), '---\r\nb: 2\r\na: 1\r\n---\r\n');
+  assert.equal(getProperty('---\nn: 14 # typed\n---\n', 'n'), '14');
+  const vault = tree({ '00 Human/80 Templates/Daily.md': '---\ntags:\n- daily\nb: # filled by a connector\nc:\n---\n' });
+  assert.deepEqual(trackedProperties(vault), ['b', 'c']);
+});
+
+test('review: a timeout also kills what the connector started', async () => {
+  const vault = tree({
+    '00 Human/80 Templates/Daily.md': TEMPLATE,
+    'local/connectors/sh/connector.json': JSON.stringify({ properties: ['alpha_total'], run: ['sh', '-c', 'sleep 30; echo 3'], timeoutSeconds: 0.5 }),
+  });
+  // The hang showed at process exit, when an orphaned child still held the pipe, so time a whole process.
+  const started = Date.now();
+  const r = require('node:child_process').spawnSync(process.execPath, [path.join(__dirname, '../bin/lcars.js'), 'collect', '--vault', vault, '--dry-run'], { encoding: 'utf8', timeout: 20000 });
+  assert.match(r.stdout, /Timed out after 0\.5s/);
+  assert.ok(Date.now() - started < 5000, 'took ' + (Date.now() - started) + 'ms');
+});
