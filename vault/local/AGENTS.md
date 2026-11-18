@@ -42,6 +42,7 @@ A connector runs when one of its properties is in the frontmatter of `00 Human/8
 lcars collect --only <name> --dry-run   # test one connector, even before its property is in the template
 lcars collect --dry-run                 # every tracked property, nothing written
 lcars status                            # which properties have a working connector
+lcars doctor                            # also checks the schedule, the last run and frozen numbers
 ```
 
 Rules:

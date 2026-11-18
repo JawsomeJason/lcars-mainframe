@@ -77,7 +77,10 @@ lcars init ~/Notes          # shows every file it will add, then asks</code></pr
         <tr><th scope="row"><code>lcars status</code></th><td>The installed version, the core files you changed, and connector health.</td></tr>
         <tr><th scope="row"><code>lcars collect --dry-run</code></th><td>Read every tracked number and write nothing.</td></tr>
         <tr><th scope="row"><code>lcars collect</code></th><td>Write today’s numbers into today’s daily note.</td></tr>
-        <tr><th scope="row"><code>lcars schedule install --at 07:00 --env-file ~/.env.lcars</code></th><td>Run <code>collect</code> every day at that time (launchd on macOS).</td></tr>
+        <tr><th scope="row"><code>lcars doctor</code></th><td>Check the vault, the schedule, the last run and each connector. Prints the fix for every failure; exits 1 if any fails.</td></tr>
+        <tr><th scope="row"><code>lcars restart</code></th><td>After a Node upgrade: install again, keeping the time and env file, with the current node and PATH.</td></tr>
+        <tr><th scope="row"><code>lcars stop</code></th><td>Turn the daily run off.</td></tr>
+        <tr><th scope="row"><code>lcars start --at 07:00 --env-file ~/.env.lcars</code></th><td>Run <code>collect</code> every day at that time (launchd on macOS).</td></tr>
         <tr><th scope="row"><code>lcars upgrade</code></th><td>Bring the vault up to the installed version of <code>lcars</code>, merging your edits.</td></tr>
       </tbody></table></div>
     </section>

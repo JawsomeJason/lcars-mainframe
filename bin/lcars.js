@@ -8,6 +8,7 @@ const { spawnSync } = require('node:child_process');
 const sync = require('../lib/sync');
 const { collect, discover, providers, trackedProperties, blocker } = require('../lib/collect');
 const schedule = require('../lib/schedule');
+const doctor = require('../lib/doctor');
 const pkg = require('../package.json');
 
 const PAYLOAD = path.join(__dirname, '..', 'vault');
@@ -19,8 +20,11 @@ const HELP = `lcars ${pkg.version}: install, upgrade and run a Memory Alpha vaul
   lcars upgrade                     bring this vault up to lcars ${pkg.version}, merging your edits
   lcars status                      version, edited core files, pending .new files, connectors
   lcars collect [--only <name>]     fill today's daily note from the connectors
-  lcars schedule install [--at HH:MM] [--env-file <file>]
-  lcars schedule remove
+  lcars start [--at HH:MM] [--env-file <file>]    run collect every day (default 07:00)
+  lcars stop                        stop the daily run
+  lcars restart [--at HH:MM] [--env-file <file>]  install again, keeping time and env file, re-pinning node and PATH
+  lcars doctor                      check the vault, schedule, last run and connectors; exit 1 on a failure
+  (older names: lcars schedule install, lcars schedule remove)
 
   --vault <dir>   the vault (default: the nearest folder above here with .lcars/)
   --dry-run       show what would happen, write nothing
@@ -53,13 +57,6 @@ function findVault(opts) {
     if (fs.existsSync(path.join(dir, sync.RECORD))) return dir;
     if (dir === path.dirname(dir)) throw Error('Not inside an lcars vault. Run `lcars init` or pass --vault <dir>.');
   }
-}
-
-/** Whether version a is newer than b (plain x.y.z). */
-function newer(a, b) {
-  const [x, y] = [a, b].map(v => v.split('.').map(Number));
-  for (let i = 0; i < 3; i++) if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0);
-  return false;
 }
 
 const LABEL = {
@@ -101,7 +98,7 @@ async function syncCommand(vault, opts, mode) {
   const record = sync.readRecord(vault);
   if (mode === 'init' && record) throw Error('Already an lcars vault (' + record.core.version + '). Use `lcars upgrade`.');
   if (mode === 'upgrade' && !record) throw Error('No install record in ' + vault + '. Use `lcars init`.');
-  if (record && newer(record.core.version, CORE.version) && !opts.force) {
+  if (record && sync.newer(record.core.version, CORE.version) && !opts.force) {
     throw Error('This vault has lcars ' + record.core.version + ', newer than this lcars (' + CORE.version + '). Upgrade lcars, or pass --force to go back.');
   }
   const actions = sync.plan({ payloadDir: PAYLOAD, vault, record });
@@ -143,6 +140,12 @@ function status(vault) {
   return attention ? 1 : 0;
 }
 
+function runSchedule(action, vault, opts) {
+  const run = { start: schedule.install, stop: schedule.remove, restart: schedule.restart }[action];
+  process.stdout.write(run(vault, { at: opts.at, envFile: opts['env-file'], dryRun: !!opts['dry-run'] }) + '\n');
+  return 0;
+}
+
 async function main(argv = process.argv.slice(2)) {
   const opts = parseArgs(argv);
   const [command, sub] = opts._;
@@ -160,12 +163,16 @@ async function main(argv = process.argv.slice(2)) {
       await collect({ vault: findVault(opts), dryRun: !!opts['dry-run'], only: opts.only });
       return 0;
     }
+    case 'start': case 'stop': case 'restart': return runSchedule(command, findVault(opts), opts);
     case 'schedule': {
-      const vault = findVault(opts);
-      if (sub === 'install') process.stdout.write(schedule.install(vault, { at: opts.at, envFile: opts['env-file'], dryRun: !!opts['dry-run'] }) + '\n');
-      else if (sub === 'remove') process.stdout.write(schedule.remove(vault) + '\n');
-      else throw Error('Use `lcars schedule install` or `lcars schedule remove`.');
-      return 0;
+      const action = { install: 'start', remove: 'stop' }[sub];
+      if (!action) throw Error('Use `lcars start` or `lcars stop`.');
+      return runSchedule(action, findVault(opts), opts);
+    }
+    case 'doctor': {
+      let vault;
+      try { vault = findVault(opts); } catch (error) { process.stdout.write('✗ vault: ' + error.message + '\n'); return 1; }
+      return doctor({ vault, version: CORE.version });
     }
     case undefined: case 'help': process.stdout.write(HELP + '\n'); return 0;
     default: throw Error('Unknown command: ' + command + '\n\n' + HELP);

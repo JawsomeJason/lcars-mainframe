@@ -23,7 +23,10 @@ Open `~/Notes` in Obsidian, then run the onboarding workflow with your AI tool: 
 lcars status                # version, core files you changed, connector health
 lcars collect --dry-run     # read every tracked number, write nothing
 lcars collect               # write them into today's daily note
-lcars schedule install --at 07:00 --env-file ~/.env.lcars
+lcars doctor                # health check: vault, schedule, last run, connectors; exit 1 on a failure
+lcars start --at 07:00 --env-file ~/.env.lcars   # collect every day (launchd on macOS)
+lcars restart               # after a Node upgrade: keeps time and env file, re-pins node and PATH
+lcars stop                  # turn the daily run off
 lcars upgrade               # after reinstalling a newer lcars-mainframe
 ```
 
