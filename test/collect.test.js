@@ -181,3 +181,16 @@ test('a crash halfway through writing never leaves a half-written daily note', a
   } finally { fs.writeFileSync = real; }
   assert.equal(fs.readFileSync(note, 'utf8'), before);
 });
+
+test('a connector that exits 0 and writes to stderr has it passed on under its name, and the reason replaces "returned null"', async () => {
+  const core = tree({});
+  const vault = tree({
+    '00 Human/80 Templates/Daily.md': TEMPLATE,
+    ...prefixed('local/connectors/alpha/', connector(['alpha_total', 'beta_count'], 'console.error("3 of 6 cards are 24 days old"); console.log(JSON.stringify({ alpha_total: 5, beta_count: null }))')),
+  });
+  let err = '';
+  const { out } = await run(vault, core, { dryRun: true, warn: s => { err += s; } });
+  assert.equal(err, 'alpha: 3 of 6 cards are 24 days old\n');
+  assert.match(out, /^beta_count: unknown {2}\(3 of 6 cards are 24 days old\)$/m);
+  assert.match(out, /^alpha_total: 5$/m);
+});

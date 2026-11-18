@@ -38,6 +38,28 @@ The program prints its numbers to stdout and exits 0: a JSON object (`{"youtube_
 
 A connector runs when one of its properties is in the frontmatter of `00 Human/80 Templates/Daily.md`, left empty. Readings are written in the template's order.
 
+If the program exits 0 but writes to stderr, `lcars collect` passes that text on as `<name>: <text>`, so it reaches the schedule's log. When a key came back null, that text is the reason shown beside `unknown`.
+
+### Journal connectors
+
+A journal connector writes what the owner did into the daily notes' `## Activity` log instead of a number. Put `"journal": "<tag>"` in `connector.json` (for example `"journal": "github"`) and leave out `properties`; `run`, `env`, `bin` and `timeoutSeconds` work as above.
+
+The program prints JSON Lines on stdout, one event per line, and exits non-zero with a reason on stderr to fail:
+
+```
+{"at": "2026-11-18T14:30:00-05:00", "text": "Opened PR: Fix login (app#12)", "link": "https://github.com/acme/app/pull/12"}
+```
+
+- `at`: when it happened, ISO 8601. Required. An unreadable, future or more than 31 days old time skips the event with a warning.
+- `text`: what happened. Required. Whitespace is collapsed, control, zero-width and bidi characters are removed, it is cut at 200 characters (by character, so an emoji stays whole), and it is made safe in Obsidian: runs of `[`/`]`, `](`, `<`, `%%`, `$$` and a word-leading `#tag` are broken or escaped so outside text cannot make a wikilink, link, tag, math or HTML.
+- `link`: optional, `https://` only, at most 2,000 characters; otherwise it is dropped with a warning.
+
+`lcars collect` runs journal connectors after the numbers and adds `- HH:MM [<tag>] <text> [link](<url>)`, in the machine's local time, to the end of `## Activity` in the note of the event's local date. That may be a past day, and a missing note is made from the template. A note with no `## Activity` heading is skipped with a warning. A line is skipped when the note already has it, or, for an event with a link, when a line there starts with the same `- HH:MM [tag] ` and holds the same `[link](url)`, so a retitled PR is not added twice. Running twice adds nothing; look back a few days and a missed run catches up. Lines go in at the end of the last `## Activity` heading (ignoring frontmatter and code fences) in that heading's line ending, and no other byte of the note changes. At most 200 lines per connector per run (the newest). A failed journal connector, or one note that cannot be read or written, is a warning and changes nothing else.
+
+Known limits: lines use the machine's time zone, so moving zones can repeat a line; an event with no link that is renamed at the source repeats; a line the owner deleted comes back while its event is still inside the connector's look-back. `lcars status` and `lcars doctor` list them, and `lcars collect --only <name> --dry-run` shows each line and its note without writing.
+
+Rules for journal connectors: one event is one fact from the source, never a guess; the tag is the connector's, so the owner can tell its lines from an agent's.
+
 ```
 lcars collect --only <name> --dry-run   # test one connector, even before its property is in the template
 lcars collect --dry-run                 # every tracked property, nothing written

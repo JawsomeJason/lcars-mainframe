@@ -96,6 +96,7 @@ lcars init ~/Notes          # shows every file it will add, then asks</code></pr
   "bin": []
 }</code></pre>
       <p>The program prints a JSON object (<code>{"open_prs": 3}</code>), <code>key=value</code> lines, or one bare number. A connector runs when its property is listed, empty, in the frontmatter of <code>00 Human/80 Templates/Daily.md</code>.</p>
+      <p>A journal connector has <code>"journal": "github"</code> instead of <code>properties</code> and prints one JSON event per line (<code>at</code>, <code>text</code>, optional <code>link</code>). <code>collect</code> adds each as <code>- HH:MM [github] text</code> to the <code>## Activity</code> log of that day, once.</p>
       <div class="note"><span class="block accent"><span>ERR</span></span><div>
         <p>A failure is written as <code>unknown</code>, never <code>0</code>, and never overwrites a value already in the note. Each connector runs in its own process group with a timeout, and the daily note is written atomically.</p>
       </div></div>

@@ -136,6 +136,13 @@ function status(vault) {
     if (why) attention++;
     out('  ' + p + ': ' + entry.connector.source + '/' + entry.connector.name + (why ? '  (' + why + ')' : ''));
   }
+  const journals = connectors.filter(c => c.journal);
+  if (journals.length) out('\nJournal connectors (write to the Activity log):');
+  for (const c of journals) {
+    const why = blocker(c);
+    if (why) attention++;
+    out('  ' + c.journal + ': ' + c.source + '/' + c.name + (why ? '  (' + why + ')' : ''));
+  }
   for (const problem of problems) { out('  problem: ' + problem); attention++; }
   return attention ? 1 : 0;
 }

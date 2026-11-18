@@ -46,6 +46,8 @@ A connector is a folder in `local/connectors/` with a `connector.json` and any p
 
 The program prints a JSON object (`{"open_prs": 3}`), `key=value` lines, or one bare number. A connector runs when its property is listed, empty, in the frontmatter of `00 Human/80 Templates/Daily.md`. A failure is written as `unknown`, never `0`. See `local/AGENTS.md` in a vault for the full rules, and `connectors/youtube/` here for an example.
 
+A **journal connector** writes what happened into the daily notes' `## Activity` log instead of a number. Its `connector.json` has `"journal": "github"` in place of `properties`, and its program prints one JSON event per line: `{"at": "2026-11-18T14:30:00Z", "text": "Opened PR: Fix login (app#12)", "link": "https://github.com/..."}`. `lcars collect` runs it after the numbers and adds `- 14:30 [github] Opened PR: Fix login (app#12) [link](https://github.com/...)` to the note of the event's local day, once: a line already in the note (or, for an event with a link, one with the same time, tag and link) is skipped, so a rerun adds nothing. Events older than 31 days are skipped, at most 200 lines per connector are added per run, and outside text is made safe in Obsidian.
+
 ## Make it yours without forking
 
 - **Rules:** put an `AGENTS.local.md` next to any `AGENTS.md`. Your file wins.
