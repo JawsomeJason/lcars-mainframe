@@ -12,7 +12,7 @@ Two constraints make the shape non-obvious:
 ## Usage
 
 ```sh
-npm i -g lcars-mainframe          # or: node ~/code/lcars-mainframe/bin/lcars.js
+npm i -g lcars-mainframe          # or: node ~/code/personal/lcars-mainframe/bin/lcars.js
 lcars init ~/Notes                # preview, confirm, write; never overwrites an existing file
 cd ~/Notes
 lcars status                      # version, edited core files, pending .new files, connectors
