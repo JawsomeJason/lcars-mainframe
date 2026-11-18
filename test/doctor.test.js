@@ -132,6 +132,9 @@ test('a blank number today fails only once the scheduled time has passed; yester
   const yesterday = setup({ values: [101, undefined, ...days(12, 100)] }).run();
   assert.equal(yesterday.code, 1);
   assert.match(yesterday.out, /✗ subs: blank yesterday/);
+  const added = setup({ values: [101], job: { at: '18:00' } }).run(); // a number added today and filled by an early run
+  assert.equal(added.code, 0, added.out);
+  assert.doesNotMatch(added.out, /blank/);
 });
 
 test('a missing env name is a warning when the last run filled the number, a failure when it did not', darwin, () => {
